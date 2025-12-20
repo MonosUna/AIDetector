@@ -1,0 +1,4 @@
+enabled: true
+project: "bert-detector"
+entity: null
+run_name: "training"

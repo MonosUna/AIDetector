@@ -1,0 +1,10 @@
+defaults:
+  - data: data
+  - model: model
+  - dvc: dvc_config
+  - train: train
+  - logging: logging
+  - test: test
+  - metrics: metrics
+  - onnx: onnx
+  - web: web

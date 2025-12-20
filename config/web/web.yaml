@@ -1,0 +1,5 @@
+host: "0.0.0.0"
+port: 8080
+url: "localhost:8000"
+model_name: "detector"
+model_version: "1"

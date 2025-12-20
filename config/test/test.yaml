@@ -1,0 +1,2 @@
+model_dir: "model/detector_local_training"
+batch_size: 32

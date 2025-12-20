@@ -1,0 +1,8 @@
+output_dir: "model/detector_local_training"
+eval_steps: 100
+learning_rate: 3e-5
+batch_size: 32
+epochs: 3
+weight_decay: 0.01
+seed: 13
+test_size: 0.15

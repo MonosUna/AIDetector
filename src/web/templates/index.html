@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI-Детектор</title>
+</head>
+<body>
+    <h2>AI-детектор машинно-сгенерированного текста</h2>
+
+    <form method="post" action="/predict">
+        <textarea name="text" rows="10" cols="80"
+                  placeholder="Введите текст..."></textarea><br><br>
+        <button type="Отправить">Check</button>
+    </form>
+
+    {% if result %}
+        <h3>Результат</h3>
+        <p><b>Вероятность, что текст AI сгенерирован:</b> {{ result.probability }}</p>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,3 @@
+outputs/
+*.onnx*
+model/detector_local_training

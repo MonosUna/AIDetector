@@ -1,0 +1,4 @@
+raw_train: "data/raw/train.csv"
+raw_test: "data/raw/test.csv"
+processed_train: "data/processed/train.json"
+processed_test: "data/processed/test.json"

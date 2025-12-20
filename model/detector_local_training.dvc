@@ -1,0 +1,6 @@
+outs:
+- md5: 1ba071e5fba1ac9bbab0561142233568.dir
+  size: 18494549
+  nfiles: 6
+  hash: md5
+  path: detector_local_training
