@@ -1,0 +1,3 @@
+dvc:
+  use_dvc: true
+  remote: "local"
