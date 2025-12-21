@@ -1,3 +1,4 @@
 outputs/
 *.onnx*
 model/detector_local_training
+node_modules/

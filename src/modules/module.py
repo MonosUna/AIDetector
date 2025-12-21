@@ -1,6 +1,5 @@
-import torch
 import pytorch_lightning as pl
-from torch.nn import functional as F
+import torch
 from transformers import AutoModelForSequenceClassification
 
 

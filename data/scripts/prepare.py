@@ -1,10 +1,10 @@
 import json
 from pathlib import Path
-import pandas as pd
+
 import hydra
-from omegaconf import DictConfig
-from pathlib import Path
+import pandas as pd
 from hydra.utils import get_original_cwd
+from omegaconf import DictConfig
 
 
 def load_raw_csv(path: str) -> pd.DataFrame:
@@ -29,10 +29,14 @@ def save_json(df: pd.DataFrame, path: str):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
-        json.dump(df.to_dict(orient="records"), f, ensure_ascii=False, indent=2)
+        json.dump(
+            df.to_dict(orient="records"), f, ensure_ascii=False, indent=2
+        )
 
 
-@hydra.main(version_base="1.1", config_path="../../config", config_name="config")
+@hydra.main(
+    version_base="1.1", config_path="../../config", config_name="config"
+)
 def main(cfg: DictConfig):
     prep_cfg = cfg.data
     cwd = Path(get_original_cwd())

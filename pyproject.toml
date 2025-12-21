@@ -26,7 +26,8 @@ dependencies = [
     "jinja2 (>=3.1.6,<4.0.0)",
     "tritonclient[http] (>=2.63.0,<3.0.0)",
     "python-multipart (>=0.0.20,<0.0.21)",
-    "dvc-ssh (>=4.2.2,<5.0.0)"
+    "dvc-ssh (>=4.2.2,<5.0.0)",
+    "dvc-s3 (>=3.2.2,<4.0.0)"
 ]
 
 [[tool.poetry.source]]
@@ -42,3 +43,14 @@ torch = {source = "pytorch-cpu"}
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 79
+
+[tool.flake8]
+max-line-length = 79
+
+[dependency-groups]
+dev = [
+    "pre-commit (>=4.5.1,<5.0.0)"
+]

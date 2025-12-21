@@ -1,21 +1,16 @@
 import logging
 from pathlib import Path
-import numpy as np
 
 import hydra
+import numpy as np
+import torch
+import wandb
+from datasets import Dataset, load_dataset
 from hydra.utils import get_original_cwd
 from omegaconf import DictConfig, OmegaConf
-
-import torch
-from torch.utils.data import DataLoader
-
-from datasets import Dataset, load_dataset
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
-
 from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
-
-import wandb
-
+from torch.utils.data import DataLoader
+from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -30,7 +25,9 @@ def load_dataset_from_path(path: Path) -> Dataset:
         raise ValueError(f"Unsupported dataset format: {path.suffix}")
 
 
-@hydra.main(version_base="1.1", config_path="../../config", config_name="config")
+@hydra.main(
+    version_base="1.1", config_path="../../config", config_name="config"
+)
 def main(cfg: DictConfig):
 
     cwd = Path(get_original_cwd())
@@ -51,7 +48,10 @@ def main(cfg: DictConfig):
     model_dir = cwd / cfg.test.model_dir
 
     tokenizer = AutoTokenizer.from_pretrained(model_dir)
-    model = AutoModelForSequenceClassification.from_pretrained(model_dir, attn_implementation="eager",)
+    model = AutoModelForSequenceClassification.from_pretrained(
+        model_dir,
+        attn_implementation="eager",
+    )
     model.to(device)
     model.eval()
 
@@ -69,19 +69,16 @@ def main(cfg: DictConfig):
             batch["text"],
             truncation=True,
             padding="max_length",
-            max_length=cfg.model.max_length
+            max_length=cfg.model.max_length,
         )
 
     dataset = dataset.map(tokenize_fn, batched=True)
     dataset.set_format(
-        type="torch",
-        columns=["input_ids", "attention_mask", "labels"]
+        type="torch", columns=["input_ids", "attention_mask", "labels"]
     )
 
     dataloader = DataLoader(
-        dataset,
-        batch_size=cfg.test.batch_size,
-        shuffle=False
+        dataset, batch_size=cfg.test.batch_size, shuffle=False
     )
 
     # ---------------- Inference loop ----------------
@@ -93,7 +90,7 @@ def main(cfg: DictConfig):
             batch = {k: v.to(device) for k, v in batch.items()}
             outputs = model(
                 input_ids=batch["input_ids"],
-                attention_mask=batch["attention_mask"]
+                attention_mask=batch["attention_mask"],
             )
             preds = torch.argmax(outputs.logits, dim=1)
 

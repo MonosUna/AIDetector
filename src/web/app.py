@@ -2,18 +2,15 @@ import logging
 from pathlib import Path
 
 import hydra
-from hydra.utils import get_original_cwd
-from omegaconf import DictConfig
-
 import numpy as np
 import tritonclient.http as httpclient
-from transformers import AutoTokenizer
-
-from fastapi import FastAPI, Request, Form
-from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
 import uvicorn
-
+from fastapi import FastAPI, Form, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from hydra.utils import get_original_cwd
+from omegaconf import DictConfig
+from transformers import AutoTokenizer
 
 log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -28,13 +25,9 @@ def main(cfg: DictConfig):
 
     cwd = Path(get_original_cwd())
 
-    tokenizer = AutoTokenizer.from_pretrained(
-        cwd / cfg.test.model_dir
-    )
+    tokenizer = AutoTokenizer.from_pretrained(cwd / cfg.test.model_dir)
 
-    client = httpclient.InferenceServerClient(
-        url=cfg.web.url
-    )
+    client = httpclient.InferenceServerClient(url=cfg.web.url)
 
     app = FastAPI()
     templates = Jinja2Templates(
@@ -43,10 +36,7 @@ def main(cfg: DictConfig):
 
     @app.get("/", response_class=HTMLResponse)
     async def index(request: Request):
-        return templates.TemplateResponse(
-            "index.html",
-            {"request": request}
-        )
+        return templates.TemplateResponse("index.html", {"request": request})
 
     @app.post("/predict", response_class=HTMLResponse)
     async def predict(request: Request, text: str = Form(...)):
@@ -63,7 +53,9 @@ def main(cfg: DictConfig):
 
         triton_inputs = [
             httpclient.InferInput("input_ids", input_ids.shape, "INT64"),
-            httpclient.InferInput("attention_mask", attention_mask.shape, "INT64"),
+            httpclient.InferInput(
+                "attention_mask", attention_mask.shape, "INT64"
+            ),
         ]
 
         triton_inputs[0].set_data_from_numpy(input_ids)
@@ -84,20 +76,10 @@ def main(cfg: DictConfig):
 
         return templates.TemplateResponse(
             "index.html",
-            {
-                "request": request,
-                "result": {
-                    "probability": f"{ai_prob:.3f}"
-                }
-            }
+            {"request": request, "result": {"probability": f"{ai_prob:.3f}"}},
         )
 
-    uvicorn.run(
-        app,
-        host=cfg.web.host,
-        port=cfg.web.port,
-        log_level="info"
-    )
+    uvicorn.run(app, host=cfg.web.host, port=cfg.web.port, log_level="info")
 
 
 if __name__ == "__main__":

@@ -1,12 +1,15 @@
-import torch
 from pathlib import Path
-from transformers import AutoModelForSequenceClassification, AutoTokenizer
+
 import hydra
+import torch
 from hydra.utils import get_original_cwd
 from omegaconf import DictConfig
+from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 
-@hydra.main(version_base="1.1", config_path="../../config", config_name="config")
+@hydra.main(
+    version_base="1.1", config_path="../../config", config_name="config"
+)
 def main(cfg: DictConfig):
     cwd = Path(get_original_cwd())
 
@@ -14,14 +17,16 @@ def main(cfg: DictConfig):
     output_path = cwd / cfg.onnx.output_path
     max_length = cfg.model.max_length
 
-    print(f"Starting ONNX export")
+    print("Starting ONNX export")
     print(f"Model dir: {model_dir}")
     print(f"Output path: {output_path}")
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     tokenizer = AutoTokenizer.from_pretrained(model_dir)
-    model = AutoModelForSequenceClassification.from_pretrained(model_dir, attn_implementation="eager")
+    model = AutoModelForSequenceClassification.from_pretrained(
+        model_dir, attn_implementation="eager"
+    )
     model.eval()
 
     dummy = tokenizer(
