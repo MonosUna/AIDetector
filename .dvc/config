@@ -4,3 +4,5 @@
     url = s3://dvc-storage
     endpointurl = http://31.15.18.177:9000
     use_ssl = false
+    access_key_id = dvc-reader
+    secret_access_key = dvc-secret-password
