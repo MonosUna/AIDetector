@@ -102,7 +102,7 @@ dvc pull
 python3 data/scripts/prepare.py
 ```
 
-Для логирования используется wandb, поэтому если в вашей системы нет их API ключа, то нужно его ввести. Для этого вводим, переходим в личный кабинет, копируем API ключ и вставляем в терминал.
+Для логирования используется wandb, поэтому если в вашей системы нет их API ключа, то нужно его ввести. Для этого вводим, переходим в личный кабинет, копируем API ключ и вставляем в терминал. ВНИМАНИЕ: обучение не будет работать без wandb, а он работает только с VPN.
 
 ```
 poetry run wandb login --relogin
@@ -111,13 +111,13 @@ poetry run wandb login --relogin
 Можно запускать обучение. по дефолту [модель](model/detector_local_training) уже скачана с помощью dvc. Новая обученная модель будем сохранена там же.
 
 ```
-poetry run python src/train/train.py
+poetry run python ai_detector/train/train.py
 ```
 
 Чтобы посмотреть метрики обученной модели на тестовом датасете:
 
 ```
-poetry run python src/test/test.py
+poetry run python ai_detector/test/test.py
 ```
 
 ## Production preparation
@@ -125,7 +125,7 @@ poetry run python src/test/test.py
 Конвертируем модель в onnx формат для triton сервера.
 
 ```
-poetry run python src/modules/to_onnx.py
+poetry run python ai_detector/modules/to_onnx.py
 ```
 
 ## Infer
@@ -135,7 +135,7 @@ poetry run python src/modules/to_onnx.py
 ```
 cd triton
 docker-compose up
-poetry run python src/web/app.py
+poetry run python ai_detector/web/app.py
 ```
 
 Сервер доступен на `http://localhost:8080`.

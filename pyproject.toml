@@ -1,5 +1,5 @@
 [project]
-name = "detectormlops"
+name = "ai_detector"
 version = "0.1.0"
 description = ""
 authors = [
@@ -35,7 +35,7 @@ name = "pytorch-cpu"
 url = "https://download.pytorch.org/whl/cpu"
 priority = "supplemental"
 [tool.poetry]
-packages = [{ include = "modules", from = "src" }]
+packages = [{ include = "modules", from = "ai_detector" }]
 
 
 [tool.poetry.dependencies]

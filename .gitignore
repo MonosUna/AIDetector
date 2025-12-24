@@ -2,3 +2,4 @@ outputs/
 *.onnx*
 model/detector_local_training
 node_modules/
+ai_detector/modules/__pycache__
