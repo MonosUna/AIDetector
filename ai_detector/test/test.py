@@ -17,12 +17,9 @@ logging.basicConfig(level=logging.INFO)
 
 
 def load_dataset_from_path(path: Path) -> Dataset:
-    if path.suffix == ".json":
-        return Dataset.from_json(str(path))
-    elif path.suffix == ".csv":
+    if path.suffix == ".csv":
         return load_dataset("csv", data_files=str(path))["train"]
-    else:
-        raise ValueError(f"Unsupported dataset format: {path.suffix}")
+    raise ValueError(f"Unsupported dataset format: {path.suffix}")
 
 
 @hydra.main(
@@ -35,7 +32,6 @@ def main(cfg: DictConfig):
 
     device = torch.device("cpu")
 
-    # ---------------- WandB ----------------
     if cfg.logging.enabled:
         wandb.init(
             project=cfg.logging.project,
@@ -44,7 +40,6 @@ def main(cfg: DictConfig):
             config=OmegaConf.to_container(cfg, resolve=True),
         )
 
-    # ---------------- Load model ----------------
     model_dir = cwd / cfg.test.model_dir
 
     tokenizer = AutoTokenizer.from_pretrained(model_dir)
@@ -55,14 +50,7 @@ def main(cfg: DictConfig):
     model.to(device)
     model.eval()
 
-    # ---------------- Load dataset ----------------
     dataset = load_dataset_from_path(cwd / cfg.data.processed_test)
-
-    # адаптация колонок под твой формат
-    if "generation" in dataset.column_names:
-        dataset = dataset.rename_column("generation", "text")
-    if "model" in dataset.column_names:
-        dataset = dataset.rename_column("model", "labels")
 
     def tokenize_fn(batch):
         return tokenizer(
@@ -81,7 +69,6 @@ def main(cfg: DictConfig):
         dataset, batch_size=cfg.test.batch_size, shuffle=False
     )
 
-    # ---------------- Inference loop ----------------
     all_preds = []
     all_labels = []
 
@@ -100,7 +87,6 @@ def main(cfg: DictConfig):
     y_pred = np.concatenate(all_preds)
     y_true = np.concatenate(all_labels)
 
-    # ---------------- Metrics ----------------
     results = {}
 
     if cfg.metrics.accuracy:

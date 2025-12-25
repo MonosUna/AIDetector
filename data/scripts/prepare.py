@@ -16,10 +16,7 @@ def load_raw_csv(path: str) -> pd.DataFrame:
 
 
 def prepare_df(df: pd.DataFrame) -> pd.DataFrame:
-    # создаём столбец text
     df["text"] = df["generation"]
-
-    # labels: human → 0, AI → 1
     df["labels"] = (df["model"] != "human").astype(int)
 
     return df[["text", "labels"]]

@@ -26,12 +26,9 @@ def set_seed(seed: int):
 
 def load_dataset_from_path(path: str) -> Dataset:
     p = Path(path)
-    if p.suffix == ".json":
-        return Dataset.from_json(str(p))
-    elif p.suffix == ".csv":
+    if p.suffix == ".csv":
         return load_dataset("csv", data_files=str(p))["train"]
-    else:
-        raise ValueError(f"Unsupported format {p.suffix}")
+    raise ValueError(f"Unsupported format {p.suffix}")
 
 
 @hydra.main(
@@ -65,16 +62,6 @@ def main(cfg: DictConfig):
         )
 
     dataset = dataset.map(tokenize_fn, batched=True)
-    dataset = (
-        dataset.rename_column("generation", "text")
-        if "generation" in dataset.column_names
-        else dataset
-    )
-    dataset = (
-        dataset.rename_column("model", "labels")
-        if "model" in dataset.column_names
-        else dataset
-    )
 
     dataset.set_format(
         type="torch", columns=["input_ids", "attention_mask", "labels"]
