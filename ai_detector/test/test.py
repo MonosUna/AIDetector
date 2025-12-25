@@ -5,7 +5,7 @@ import hydra
 import numpy as np
 import torch
 import wandb
-from datasets import Dataset, load_dataset
+from datasets import Dataset
 from hydra.utils import get_original_cwd
 from omegaconf import DictConfig, OmegaConf
 from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
@@ -17,8 +17,8 @@ logging.basicConfig(level=logging.INFO)
 
 
 def load_dataset_from_path(path: Path) -> Dataset:
-    if path.suffix == ".csv":
-        return load_dataset("csv", data_files=str(path))["train"]
+    if path.suffix == ".json":
+        return Dataset.from_json(str(path))
     raise ValueError(f"Unsupported dataset format: {path.suffix}")
 
 

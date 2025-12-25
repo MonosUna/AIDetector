@@ -8,7 +8,7 @@ import numpy as np
 import pytorch_lightning as pl
 import torch
 import wandb
-from datasets import Dataset, load_dataset
+from datasets import Dataset
 from hydra.utils import get_original_cwd
 from omegaconf import DictConfig, OmegaConf
 from pytorch_lightning.loggers import WandbLogger
@@ -26,8 +26,8 @@ def set_seed(seed: int):
 
 def load_dataset_from_path(path: str) -> Dataset:
     p = Path(path)
-    if p.suffix == ".csv":
-        return load_dataset("csv", data_files=str(p))["train"]
+    if p.suffix == ".json":
+        return Dataset.from_json(str(p))
     raise ValueError(f"Unsupported format {p.suffix}")
 
 
